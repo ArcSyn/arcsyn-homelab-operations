@@ -1,0 +1,33 @@
+# Secrets and runtime configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime state and databases
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.wal
+*.shm
+
+# Backups, archives, logs, and private evidence
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.log
+backups/
+evidence-private/
+screenshots-private/
+
+# Local editor / OS artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
