@@ -62,7 +62,7 @@ run_health() {
     SEARXNG_INTERNAL_URL="http://127.0.0.1/searxng-health" \
     DISK_CHECK_SCRIPT="true" \
     ARCSYN_SKIP_EXTERNAL_WORKERS=1 \
-    "$REPO_ROOT/scripts/check-lab-health.portfolio.sh"
+    bash "$REPO_ROOT/scripts/check-lab-health.portfolio.sh"
 }
 
 run_health >"$TEST_ROOT/running-output"
