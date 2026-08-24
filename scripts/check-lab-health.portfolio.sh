@@ -25,6 +25,11 @@ check() {
     fi
 }
 
+container_running() {
+    local container="$1"
+    [[ "$(docker inspect -f '{{.State.Running}}' "$container")" == "true" ]]
+}
+
 echo "ArcSyn AI Lab Health Check"
 echo "==========================="
 
@@ -32,11 +37,11 @@ check "Docker service" systemctl is-active --quiet docker
 check "Tailscale service" systemctl is-active --quiet tailscaled
 check "nftables service" systemctl is-active --quiet nftables
 
-check "Open WebUI container" docker inspect -f '{{.State.Running}}' open-webui
-check "SearXNG container" docker inspect -f '{{.State.Running}}' searxng
-check "Homepage container" docker inspect -f '{{.State.Running}}' homepage
-check "Uptime Kuma container" docker inspect -f '{{.State.Running}}' uptime-kuma
-check "Jellyfin container" docker inspect -f '{{.State.Running}}' jellyfin
+check "Open WebUI container" container_running open-webui
+check "SearXNG container" container_running searxng
+check "Homepage container" container_running homepage
+check "Uptime Kuma container" container_running uptime-kuma
+check "Jellyfin container" container_running jellyfin
 
 check "Open WebUI health endpoint" curl -fsS "$OPEN_WEBUI_HEALTH_URL"
 check "Jellyfin health endpoint" curl -fsS "$JELLYFIN_HEALTH_URL"

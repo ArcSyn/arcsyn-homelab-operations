@@ -1,0 +1,80 @@
+name: Portfolio verification
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate shell syntax
+        shell: bash
+        run: |
+          bash -n scripts/check-lab-health.portfolio.sh
+          bash -n scripts/check-disk-space.portfolio.sh
+          bash -n tests/test-check-lab-health.portfolio.sh
+
+      - name: Install ShellCheck
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck --version
+
+      - name: Run ShellCheck
+        shell: bash
+        run: |
+          shellcheck \
+            scripts/check-lab-health.portfolio.sh \
+            scripts/check-disk-space.portfolio.sh \
+            tests/test-check-lab-health.portfolio.sh
+
+      - name: Run container health predicate regression
+        shell: bash
+        run: bash tests/test-check-lab-health.portfolio.sh
+
+      - name: Smoke test disk monitor
+        shell: bash
+        run: |
+          WARNING_PERCENT=101 \
+          CRITICAL_PERCENT=102 \
+          ARCSYN_DISK_PATHS="$RUNNER_TEMP" \
+            bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-ok.txt"
+          grep -Fq 'Overall: OK' "$RUNNER_TEMP/disk-ok.txt"
+
+          set +e
+          WARNING_PERCENT=0 \
+          CRITICAL_PERCENT=0 \
+          ARCSYN_DISK_PATHS="$RUNNER_TEMP" \
+            bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-critical.txt" 2>&1
+          critical_rc=$?
+
+          WARNING_PERCENT=101 \
+          CRITICAL_PERCENT=102 \
+          ARCSYN_DISK_PATHS="$RUNNER_TEMP/definitely-missing" \
+            bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-missing.txt" 2>&1
+          missing_rc=$?
+          set -e
+
+          test "$critical_rc" -eq 2
+          grep -Fq 'Overall: CRITICAL' "$RUNNER_TEMP/disk-critical.txt"
+
+          test "$missing_rc" -eq 2
+          grep -Fq '[CRITICAL] Missing path:' "$RUNNER_TEMP/disk-missing.txt"
+          grep -Fq 'Overall: CRITICAL' "$RUNNER_TEMP/disk-missing.txt"
+
+      - name: Verify tests leave tracked files unchanged
+        shell: bash
+        run: git diff --exit-code -- .

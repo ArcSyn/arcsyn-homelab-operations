@@ -30,11 +30,17 @@ This repository contains portfolio-safe derivatives and summaries of real privat
 
 **Private source:** `scripts/check-lab-health.sh`
 
-**Pinned source revision:** `ed1236295087b1acb26cf4f42ee5e39cd93dbb58`
+**Original pinned source revision:** `ed1236295087b1acb26cf4f42ee5e39cd93dbb58`
 
-**Pinned source blob:** `bc6ae709ec5541d45f3e04da56898b9c7eab9b40`
+**Original pinned source blob:** `bc6ae709ec5541d45f3e04da56898b9c7eab9b40`
 
-**Evidence status:** Real operational health-check logic from the private homelab source.
+**Corrected private-source merge commit:** `0255cec17723e0f49b2a5d764a14eb76a3759e93` (PR #56)
+
+**Corrected private-source blob:** `b7f27dfcae9b3c3bdebbf98ac49ffda4d2f1f90b`
+
+**Evidence status:** Real operational health-check logic from the private homelab source. The stopped-container false-PASS identified during portfolio review was corrected in both the portfolio derivative and the private source; the private-source correction landed through PR #56 with repository evidence PASS.
+
+**Correctness correction:** The original source used `docker inspect -f '{{.State.Running}}'` directly through a generic exit-status wrapper. Docker can successfully inspect an existing stopped container and print `false`, which allowed a false PASS. Both the private source and this derivative now use an explicit predicate that succeeds only when the inspected value is exactly `true`. Disposable command-mock regressions cover running, stopped, and missing states for every represented container check.
 
 **Publication changes:**
 
