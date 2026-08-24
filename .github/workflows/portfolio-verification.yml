@@ -49,12 +49,12 @@ jobs:
         shell: bash
         run: |
           ARCSYN_DISK_PATHS="$RUNNER_TEMP" \
-            scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-ok.txt"
+            bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-ok.txt"
           grep -Fq 'Overall: OK' "$RUNNER_TEMP/disk-ok.txt"
 
           set +e
           ARCSYN_DISK_PATHS="$RUNNER_TEMP/definitely-missing" \
-            scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-missing.txt" 2>&1
+            bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-missing.txt" 2>&1
           rc=$?
           set -e
 
