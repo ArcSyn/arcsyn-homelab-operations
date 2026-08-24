@@ -48,17 +48,30 @@ jobs:
       - name: Smoke test disk monitor
         shell: bash
         run: |
+          WARNING_PERCENT=101 \
+          CRITICAL_PERCENT=102 \
           ARCSYN_DISK_PATHS="$RUNNER_TEMP" \
             bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-ok.txt"
           grep -Fq 'Overall: OK' "$RUNNER_TEMP/disk-ok.txt"
 
           set +e
+          WARNING_PERCENT=0 \
+          CRITICAL_PERCENT=0 \
+          ARCSYN_DISK_PATHS="$RUNNER_TEMP" \
+            bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-critical.txt" 2>&1
+          critical_rc=$?
+
+          WARNING_PERCENT=101 \
+          CRITICAL_PERCENT=102 \
           ARCSYN_DISK_PATHS="$RUNNER_TEMP/definitely-missing" \
             bash scripts/check-disk-space.portfolio.sh >"$RUNNER_TEMP/disk-missing.txt" 2>&1
-          rc=$?
+          missing_rc=$?
           set -e
 
-          test "$rc" -eq 2
+          test "$critical_rc" -eq 2
+          grep -Fq 'Overall: CRITICAL' "$RUNNER_TEMP/disk-critical.txt"
+
+          test "$missing_rc" -eq 2
           grep -Fq '[CRITICAL] Missing path:' "$RUNNER_TEMP/disk-missing.txt"
           grep -Fq 'Overall: CRITICAL' "$RUNNER_TEMP/disk-missing.txt"
 
