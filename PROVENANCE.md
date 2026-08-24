@@ -30,11 +30,13 @@ This repository contains portfolio-safe derivatives and summaries of real privat
 
 **Private source:** `scripts/check-lab-health.sh`
 
-**Pinned source revision:** `ed1236295087b1acb26cf4f42ee5e39cd93dbb58`
+**Original pinned source revision:** `ed1236295087b1acb26cf4f42ee5e39cd93dbb58`
 
-**Pinned source blob:** `bc6ae709ec5541d45f3e04da56898b9c7eab9b40`
+**Original pinned source blob:** `bc6ae709ec5541d45f3e04da56898b9c7eab9b40`
 
-**Evidence status:** Real operational health-check logic from the private homelab source.
+**Evidence status:** Real operational health-check logic from the private homelab source, with one reviewed correctness correction applied to the portfolio derivative while the equivalent private-source fix is under review.
+
+**Correctness correction:** The original source used `docker inspect -f '{{.State.Running}}'` directly through a generic exit-status wrapper. Docker can successfully inspect an existing stopped container and print `false`, which allowed a false PASS. The derivative now uses an explicit predicate that succeeds only when the inspected value is exactly `true`. A disposable command-mock regression covers running, stopped, and missing states for every represented container check.
 
 **Publication changes:**
 
@@ -42,6 +44,7 @@ This repository contains portfolio-safe derivatives and summaries of real privat
 - application health URLs externalized;
 - internal search URL externalized;
 - private absolute disk-check path externalized through `DISK_CHECK_SCRIPT`;
+- container-running checks changed to require an exact `true` state rather than successful inspection alone;
 - service/container checks, pass/fail accounting, external-worker skip behavior, dependency checks, and failure exit behavior retained.
 
 The public derivative is intentionally not described as byte-identical or as a production replacement.
