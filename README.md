@@ -32,6 +32,7 @@ The GitHub activity collector/work-ledger project remains work in progress and i
 - [`scripts/check-lab-health.portfolio.sh`](scripts/check-lab-health.portfolio.sh) — portfolio-safe derivative of the real health-check logic
 - [`scripts/check-disk-space.portfolio.sh`](scripts/check-disk-space.portfolio.sh) — portfolio-safe derivative of the real disk-space monitor
 - [`docs/case-studies/backup-validation-and-isolated-restore.md`](docs/case-studies/backup-validation-and-isolated-restore.md) — verified backup/recovery case study
+- [`docs/case-studies/compressed-tar-validation-timeout.md`](docs/case-studies/compressed-tar-validation-timeout.md) — bounded deep-validation timeout diagnosis, corrected extraction order, and verified recovery
 - [`PROVENANCE.md`](PROVENANCE.md) — private-source revision and redaction record for each public artifact
 - [`SECURITY.md`](SECURITY.md) — publication boundary and excluded data
 

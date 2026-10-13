@@ -99,6 +99,18 @@ The public derivative is intentionally not described as byte-identical or as a p
 
 **Purpose:** Make explicit what this public-facing evidence repository must never contain.
 
+### `docs/case-studies/compressed-tar-validation-timeout.md`
+
+**Basis:** Private `ArcSyn/arcsyn-ai-lab` backup validator correction, source-controlled review/merge and the owner-operated production deep-validation run of October 12, 2026 EDT.
+
+**Evidence represented:** Repeated previous bounded deep-validation timeouts, a reviewed Python change from logical depth/path member iteration to tar physical-offset extraction order, a validator-only deployment, and a fresh live deep-validation report.
+
+**Recorded live outcome:** One approved deep run completed in approximately 42 seconds after the prior timeout incidents; the validator reported 9,550 extracted files, `PASS` with no failures, and `ok` for four offline SQLite integrity checks (Open WebUI application/vector store, Uptime Kuma, Jellyfin). The deep service exited successfully, and the report recorded temporary extraction and cleanup success.
+
+**Private source traceability:** Source correction merged in private infrastructure PR #84; exact deployed validator SHA-256 and execution report are retained only in the private operational evidence, not reproduced in the public summary.
+
+**Publication changes:** Removed private archive name, file paths, hostname, GitHub-private evidence link, endpoints, report identifier, credentials, and complete raw logs. Explained that separate failing/passing archives do not constitute an isolated speed benchmark and that a deep validation is not a bare-metal/full-application restore.
+
 ## Deferred evidence
 
 The GitHub activity collector and SQLite work ledger are intentionally not exported here. They remain active work in progress and are not represented as complete portfolio projects.
